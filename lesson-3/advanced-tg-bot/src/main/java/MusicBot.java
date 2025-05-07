@@ -1,5 +1,7 @@
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.List;
 
@@ -15,6 +17,17 @@ public class MusicBot extends TelegramLongPollingBot {
                 String reply = "🎵 Похожие артисты:\n" + String.join("\n", results);
                 sendMessage(update.getMessage().getChatId(),reply);
             }
+        }
+    }
+
+    private void sendMessage(Long chatId, String text) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId.toString());
+        message.setText(text);
+        try {
+            execute(message);
+        } catch (TelegramApiException e) {
+            e.printStackTrace();
         }
     }
 
