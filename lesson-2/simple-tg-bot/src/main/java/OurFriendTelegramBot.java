@@ -9,7 +9,7 @@ import java.util.List;
 
 public class OurFriendTelegramBot extends TelegramLongPollingBot implements MessengerBot  {
 
-    private static final String token = "7871197046:AAH57GP5ny7lmH6cjNoMrsS3v05zJw-JcVc";
+    private static final String token = "8173941244:AAFui4fibVB8K9CudkPNkZZoKRIG0Tnvz6w";
     private static final String username = "@our_very_good_friend_bot";
 
 
@@ -25,7 +25,7 @@ public class OurFriendTelegramBot extends TelegramLongPollingBot implements Mess
 
     @Override
     public String sayHello(String name) {
-        return "Привет, " + name + "!";
+        return "Приве, " + name + "!";
     }
 
     public String sayBotMood() {
