@@ -1,0 +1,146 @@
+# Лекція: Spring Boot + H2 — створення REST-ендпоінта
+
+## Мета:
+Показати, як швидко створити REST API з використанням Spring Boot та H2 in-memory бази даних.
+
+---
+
+## 1. Вступ
+
+- **Spring Boot** — фреймворк для створення готових до використання Java-додатків.
+- **H2 Database** — вбудована реляційна база даних, що зберігається у пам’яті (in-memory).
+- Використовується для швидкого тестування, навчання, прототипів.
+
+---
+
+## 2. Структура проєкту
+
+src
+├── main
+│   ├── java
+│   │   └── com.example.demo
+│   │       ├── DemoApplication.java
+│   │       ├── controller
+│   │       │   └── UserController.java
+│   │       ├── model
+│   │       │   └── User.java
+│   │       ├── repository
+│   │       │   └── UserRepository.java
+│   └── resources
+│       └── application.properties
+build.gradle
+
+---
+
+## 3. Gradle залежності
+
+**build.gradle**
+groovy
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.2.0'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'com.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    runtimeOnly 'com.h2database:h2'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+---
+
+## 4. Створення сутності (Entity)
+
+**User.java**
+java
+@Entity
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    // геттери та сеттери
+}
+
+---
+
+## 5. Репозиторій
+
+**UserRepository.java**
+java
+public interface UserRepository extends JpaRepository<User, Long> {
+}
+
+---
+
+## 6. REST-контролер
+
+**UserController.java**
+java
+@RestController
+@RequestMapping("/users")
+public class UserController {
+    private final UserRepository repository;
+
+    public UserController(UserRepository repository) {
+        this.repository = repository;
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return repository.findAll();
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return repository.save(user);
+    }
+}
+
+---
+
+## 7. Налаштування H2 та JPA
+
+**application.properties**
+properties
+spring.datasource.url=jdbc:h2:mem:testdb
+spring.datasource.driverClassName=org.h2.Driver
+spring.datasource.username=sa
+spring.datasource.password=
+spring.h2.console.enabled=true
+spring.jpa.hibernate.ddl-auto=update
+
+---
+
+## 8. Запуск і тестування
+
+1. Запусти `DemoApplication.java`.
+2. Перейди до H2 Console: http://localhost:8080/h2-console
+   JDBC URL: `jdbc:h2:mem:testdb`
+3. Відправ запит:
+   - `POST /users` з тілом: `{"name": "Ivan"}`
+   - `GET /users` — отримаєш список користувачів
+
+---
+
+## 9. Висновок
+
+- Spring Boot дозволяє дуже швидко створювати REST API.
+- H2 — зручна база даних для тестування та навчання.
+- Gradle — простий у використанні для збирання Java/Spring проектів.
